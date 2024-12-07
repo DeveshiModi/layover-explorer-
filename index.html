@@ -52,6 +52,11 @@
         <button type="submit">Search</button>
     </form>
 
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+
     {% if flight %}
     <div class="card">
         <h3>Flight Details</h3>
