@@ -4,9 +4,9 @@ import requests
 app = Flask(__name__)
 
 # API Keys and Base URLs
-FLIGHT_API_KEY = 'my_api_key'  # Replace with your AviationStack API Key
+FLIGHT_API_KEY = 'MY_API_KEY'  # Replace with your AviationStack API Key
 FLIGHT_BASE_URL = "https://api.aviationstack.com/v1/flights"
-GEOAPIFY_API_KEY = 'my_api_key'  # Replace with your Geoapify API Key
+GEOAPIFY_API_KEY = 'MY_API_KEY'  # Replace with your Geoapify API Key
 
 def get_destination_city(flight):
     """Extract the destination city from flight data."""
@@ -60,6 +60,7 @@ def get_places_for_city(city_name):
 
 @app.route("/", methods=["GET", "POST"])
 def home():
+    error_message = None  # Initialize error message
     if request.method == "POST":
         flight_number = request.form.get("flight_number")
         params = {"access_key": FLIGHT_API_KEY, "flight_iata": flight_number}
@@ -72,10 +73,13 @@ def home():
             if destination_city:
                 places = get_places_for_city(destination_city)
                 return render_template(
-                    "index.html", flight=flight, destination_city=destination_city, places=places
+                    "index.html", flight=flight, destination_city=destination_city, places=places, error_message=None
                 )
-    
-    return render_template("index.html", flight=None, destination_city=None, places=None)
+        else:
+            error_message = "Not a valid flight number."
+
+    return render_template("index.html", flight=None, destination_city=None, places=None, error_message=error_message)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
